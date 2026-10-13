@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --color-gold-300: #E6C687;
+  --color-gold-400: #D4AF37;
+  --color-gold-500: #C5A059;
+  --color-gold-600: #A9843B;
+  --color-gold-700: #7F6126;
+  --color-gold-800: #543F15;
+  --color-gold-900: #2E2207;
+
+  --color-obsidian-950: #060709;
+  --color-obsidian-900: #0B0D12;
+  --color-obsidian-850: #11141C;
+  --color-obsidian-800: #171B26;
+  --color-obsidian-750: #1F2533;
+  --color-obsidian-700: #283042;
+  --color-obsidian-600: #37425B;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--color-obsidian-950);
+  color: #F3F4F6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, .font-serif {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #FDF4CD 0%, #D4AF37 45%, #C5A059 75%, #8E6E26 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.gold-gradient-bg {
+  background: linear-gradient(135deg, #E6C687 0%, #D4AF37 50%, #A9843B 100%);
+}
+
+.shadow-gold-glow {
+  box-shadow: 0 0 25px -4px rgba(197, 160, 89, 0.35);
+}
+
+.shadow-gold-glow-lg {
+  box-shadow: 0 0 50px -5px rgba(197, 160, 89, 0.50);
+}
+
+.shadow-gold-inner {
+  box-shadow: inset 0 0 20px 0 rgba(197, 160, 89, 0.15);
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-obsidian-900);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-obsidian-750);
+  border-radius: 9999px;
+  border: 1px solid var(--color-obsidian-700);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold-500);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.8) sepia(1) saturate(5) hue-rotate(5deg);
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+[color-scheme="dark"],
+.dark input[type="date"] {
+  color-scheme: dark;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+.animate-shake {
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+@keyframes pulseSlow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse-slow {
+  animation: pulseSlow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+button, a, input, select, textarea {
+  transition: all 0.2s ease-in-out;
+}
+
+.focus-gold:focus {
+  outline: none;
+  border-color: var(--color-gold-500);
+  box-shadow: 0 0 0 2px rgba(197, 160, 89, 0.25);
+}
+
+.glass-card {
+  background: rgba(17, 20, 28, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(197, 160, 89, 0.2);
+}

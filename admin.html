@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seu Dito Barbearia & Club — Painel Administrativo & Gestão</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            gold: {
+              300: '#E6C687',
+              400: '#D4AF37',
+              500: '#C5A059',
+              600: '#A9843B',
+              700: '#7F6126',
+              800: '#543F15',
+              900: '#2E2207'
+            },
+            obsidian: {
+              950: '#060709',
+              900: '#0B0D12',
+              850: '#11141C',
+              800: '#171B26',
+              750: '#1F2533',
+              700: '#283042',
+              600: '#37425B'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-obsidian-950 text-neutral-100 font-sans selection:bg-gold-500 selection:text-black antialiased min-h-screen flex flex-col justify-between">
+
+  <header class="bg-obsidian-950/95 backdrop-blur-md border-b border-gold-500/30 px-4 sm:px-6 py-2.5 sticky top-0 z-40 transition-all">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+      
+      <a 
+        href="index.html" 
+        title="Retornar ao Site" 
+        class="group flex items-center focus:outline-none focus:ring-2 focus:ring-gold-400/50 rounded-xl p-1 transition-all shrink-0"
+      >
+        <img 
+          src="img/logo.png" 
+          onerror="onLogoImgError(this)" 
+          alt="Logo Oficial" 
+          class="h-10 sm:h-11 w-auto object-contain transition-transform duration-200 group-hover:scale-105 filter drop-shadow-[0_2px_8px_rgba(217,163,66,0.25)]" 
+        />
+      </a>
+
+      <nav id="adminNavItems" class="flex items-center gap-1 bg-obsidian-900 border border-obsidian-800 p-1 rounded-xl overflow-x-auto max-w-full"></nav>
+
+      <div class="flex items-center gap-2 sm:gap-3 ml-auto sm:ml-0">
+        <a 
+          href="index.html" 
+          title="Ver Landing Page Pública" 
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-obsidian-900 hover:bg-obsidian-850 border border-gold-500/40 hover:border-gold-400 text-gold-300 hover:text-white text-xs font-semibold transition shadow-sm"
+        >
+          <i data-lucide="external-link" class="w-3.5 h-3.5 text-gold-400"></i>
+          <span>Ver Site</span>
+        </a>
+
+        <div id="adminUserBadge"></div>
+
+        <button 
+          onclick="logout()" 
+          title="Sair do Sistema" 
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-obsidian-850 hover:bg-rose-950/80 border border-obsidian-750 hover:border-rose-500/50 text-neutral-300 hover:text-rose-200 text-xs font-semibold transition shadow-sm"
+        >
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span>Sair</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
+
+    <section id="adminLoginView" class="py-10 flex items-center justify-center min-h-[75vh]">
+      <div id="adminLoginCard" class="w-full max-w-md bg-obsidian-900 border border-gold-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden backdrop-blur-md">
+        
+        <div class="text-center space-y-2">
+          <img 
+            src="img/logo.png" 
+            onerror="onLogoImgError(this)" 
+            alt="Logo Oficial" 
+            class="h-16 w-auto mx-auto object-contain filter drop-shadow-[0_2px_12px_rgba(217,163,66,0.35)] mb-3" 
+          />
+          <h2 class="font-serif font-bold text-2xl text-white">Área de Acesso Restrito</h2>
+          <p class="text-xs text-neutral-400">Entre com seu usuário para gerenciar a agenda e operação.</p>
+        </div>
+
+        <div id="loginErrorMessage" class="hidden p-3 rounded-xl bg-rose-950/40 border border-rose-500/50 text-rose-200 text-xs text-center font-semibold animate-shake">
+          Credenciais incorretas.
+        </div>
+
+        <form onsubmit="submitLogin(event)" class="space-y-4 text-xs">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Usuário / Login</label>
+            <div class="relative">
+              <i data-lucide="user" class="w-4 h-4 text-neutral-400 absolute left-3.5 top-3"></i>
+              <input 
+                type="text" 
+                id="adminUsername" 
+                required 
+                placeholder="Ex: admin ou caio" 
+                class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl pl-10 pr-3.5 py-2.5 text-white outline-none text-xs transition" 
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Senha de Acesso</label>
+            <div class="relative">
+              <i data-lucide="key" class="w-4 h-4 text-neutral-400 absolute left-3.5 top-3"></i>
+              <input 
+                type="password" 
+                id="adminPassword" 
+                required 
+                placeholder="••••••••" 
+                class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl pl-10 pr-3.5 py-2.5 text-white outline-none text-xs transition" 
+              />
+            </div>
+          </div>
+
+          <button 
+            type="submit" 
+            class="w-full py-3.5 rounded-xl bg-gradient-to-r from-gold-500 via-gold-400 to-gold-500 text-obsidian-950 font-bold uppercase tracking-wider text-xs shadow-gold-glow hover:scale-[1.02] active:scale-95 transition flex items-center justify-center gap-2"
+          >
+            <i data-lucide="log-in" class="w-4 h-4"></i>
+            <span>Acessar Painel</span>
+          </button>
+        </form>
+
+        <div class="pt-4 border-t border-obsidian-800 space-y-2 text-center">
+          <span class="text-[11px] text-neutral-400 block font-semibold">Acesso rápido demonstrativo:</span>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <button 
+              type="button" 
+              onclick="quickFillLogin('admin', '1234')" 
+              class="p-2.5 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-obsidian-750 text-neutral-300 hover:text-white transition flex flex-col items-center"
+            >
+              <strong class="text-gold-400 text-xs">👑 Administrador</strong>
+              <span class="text-[10px] text-neutral-400">admin / 1234</span>
+            </button>
+
+            <button 
+              type="button" 
+              onclick="quickFillLogin('caio', '12345')" 
+              class="p-2.5 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-obsidian-750 text-neutral-300 hover:text-white transition flex flex-col items-center"
+            >
+              <strong class="text-sky-300 text-xs">✂️ Barbeiro Caio</strong>
+              <span class="text-[10px] text-neutral-400">caio / 12345</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="text-center pt-2">
+          <a href="index.html" class="text-xs text-neutral-400 hover:text-gold-400 transition flex items-center justify-center gap-1">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+            <span>Voltar ao site público</span>
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <div id="adminAppView" class="hidden space-y-6 animate-fade-in">
+
+      <div id="barberPersonalGoalWidget" class="hidden"></div>
+
+      <section id="viewAgenda" class="space-y-6">
+        
+        <div class="bg-obsidian-900 border border-obsidian-800 p-4 sm:p-5 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-xl">
+          <div class="flex items-center gap-2 sm:gap-3">
+            <div class="flex items-center gap-1 bg-obsidian-800 border border-obsidian-700 p-1 rounded-xl">
+              <button onclick="navigateAgendaDate(-1)" title="Dia Anterior" class="p-2 rounded-lg hover:bg-obsidian-700 text-neutral-300 hover:text-white transition">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+              </button>
+              <button onclick="setAgendaDateToToday()" class="px-3 py-1 rounded-lg text-xs font-bold bg-obsidian-700 hover:bg-gold-500 hover:text-black transition">
+                Hoje
+              </button>
+              <button onclick="navigateAgendaDate(1)" title="Próximo Dia" class="p-2 rounded-lg hover:bg-obsidian-700 text-neutral-300 hover:text-white transition">
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <div>
+              <h3 id="agendaDateHeaderLabel" class="font-serif font-bold text-white text-base sm:text-lg leading-none">Hoje</h3>
+              <input 
+                type="date" 
+                id="agendaDatePicker" 
+                onchange="setAgendaDate(this.value)" 
+                class="bg-transparent text-[11px] text-gold-400 font-mono outline-none cursor-pointer [color-scheme:dark] pt-1" 
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2.5 ml-auto">
+            <button 
+              onclick="concludeAllAppointmentsToday()" 
+              title="Concluir todos os atendimentos pendentes do dia" 
+              class="px-3.5 py-2 rounded-xl bg-emerald-600/20 border border-emerald-500/40 hover:bg-emerald-600 hover:text-white text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition shadow-sm"
+            >
+              <i data-lucide="check-check" class="w-3.5 h-3.5"></i>
+              <span class="hidden sm:inline">Concluir Todos do Dia</span>
+              <span class="sm:hidden">Concluir Todos</span>
+            </button>
+
+            <button 
+              onclick="openQuickBookingModal()" 
+              class="px-4 py-2 rounded-xl bg-gold-500 hover:bg-gold-400 text-obsidian-950 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-gold-glow transition"
+            >
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>Novo Encaixe</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="agendaKpiCardsContainer" class="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
+          <div class="p-4 rounded-2xl bg-obsidian-900 border border-obsidian-800">
+            <span class="text-[10px] text-neutral-400 uppercase font-bold block mb-1">Faturamento Hoje</span>
+            <strong id="kpiDayRevenue" class="text-gold-400 font-serif text-lg sm:text-xl">R$ 0,00</strong>
+          </div>
+          <div class="p-4 rounded-2xl bg-obsidian-900 border border-obsidian-800">
+            <span class="text-[10px] text-neutral-400 uppercase font-bold block mb-1">Total Reservas</span>
+            <strong id="kpiDayAppointments" class="text-white text-lg sm:text-xl">0</strong>
+          </div>
+          <div class="p-4 rounded-2xl bg-obsidian-900 border border-obsidian-800">
+            <span class="text-[10px] text-neutral-400 uppercase font-bold block mb-1">Concluídos</span>
+            <strong id="kpiDayCompleted" class="text-emerald-400 text-lg sm:text-xl">0</strong>
+          </div>
+          <div class="p-4 rounded-2xl bg-obsidian-900 border border-obsidian-800">
+            <span class="text-[10px] text-neutral-400 uppercase font-bold block mb-1">Assinantes Clube</span>
+            <strong id="kpiDayClub" class="text-sky-300 text-lg sm:text-xl">0</strong>
+          </div>
+          <div class="p-4 rounded-2xl bg-obsidian-900 border border-obsidian-800 col-span-2 sm:col-span-1">
+            <span class="text-[10px] text-neutral-400 uppercase font-bold block mb-1">Ocupação da Grade</span>
+            <strong id="kpiDayOccupancy" class="text-amber-400 text-lg sm:text-xl">0%</strong>
+          </div>
+        </div>
+
+        <div class="bg-obsidian-900 border border-obsidian-800 rounded-2xl overflow-hidden shadow-xl">
+          <div id="agendaHeaderColumns" class="flex border-b border-obsidian-800 bg-obsidian-950/70"></div>
+          <div id="agendaGridBody" class="divide-y divide-obsidian-800/80"></div>
+        </div>
+
+      </section>
+
+      <section id="viewBarbers" class="hidden space-y-6">
+        <div class="bg-obsidian-900 border border-obsidian-800 p-5 rounded-2xl flex items-center justify-between shadow-xl">
+          <div>
+            <h2 class="font-serif font-bold text-xl text-white">Equipe de Barbeiros & Especialistas</h2>
+            <p class="text-xs text-neutral-400">Cadastre novos profissionais, edite metas, comissões de serviços e dados de acesso.</p>
+          </div>
+          <button 
+            onclick="openNewBarberModal()" 
+            class="px-4 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-obsidian-950 font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-gold-glow transition"
+          >
+            <i data-lucide="user-plus" class="w-4 h-4"></i>
+            <span>+ Novo Barbeiro</span>
+          </button>
+        </div>
+
+        <div id="barbersManagementList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </section>
+
+      <section id="viewServices" class="hidden space-y-6">
+        <div class="bg-obsidian-900 border border-obsidian-800 p-5 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-xl">
+          <div>
+            <h2 class="font-serif font-bold text-xl text-white">Catálogo de Procedimentos & Combos</h2>
+            <p class="text-xs text-neutral-400">Edição completa de serviços, preços, duração, comissões e categorias.</p>
+          </div>
+          <button 
+            onclick="openNewServiceModal()" 
+            class="px-4 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-obsidian-950 font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-gold-glow transition"
+          >
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>+ Novo Serviço</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs" id="servicesCategoryFilterBar">
+          <button onclick="setServicesFilter('all')" id="btnFilterSrv_all" class="px-3.5 py-1.5 rounded-xl font-bold bg-gold-500 text-obsidian-950 transition">Todos</button>
+          <button onclick="setServicesFilter('cabelo')" id="btnFilterSrv_cabelo" class="px-3.5 py-1.5 rounded-xl font-semibold bg-obsidian-850 hover:bg-obsidian-800 text-neutral-300 transition">Cabelo</button>
+          <button onclick="setServicesFilter('barba')" id="btnFilterSrv_barba" class="px-3.5 py-1.5 rounded-xl font-semibold bg-obsidian-850 hover:bg-obsidian-800 text-neutral-300 transition">Barba</button>
+          <button onclick="setServicesFilter('combo')" id="btnFilterSrv_combo" class="px-3.5 py-1.5 rounded-xl font-semibold bg-obsidian-850 hover:bg-obsidian-800 text-neutral-300 transition">Combos</button>
+          <button onclick="setServicesFilter('tratamento')" id="btnFilterSrv_tratamento" class="px-3.5 py-1.5 rounded-xl font-semibold bg-obsidian-850 hover:bg-obsidian-800 text-neutral-300 transition">Tratamentos</button>
+        </div>
+
+        <div id="servicesManagementList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </section>
+
+      <section id="viewClubMembers" class="hidden space-y-6">
+        <div class="bg-obsidian-900 border border-obsidian-800 p-5 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-xl">
+          <div>
+            <h2 class="font-serif font-bold text-xl text-white">Clube de Assinaturas Seu Dito</h2>
+            <p class="text-xs text-neutral-400">Edição e gestão completa de planos e membros cadastrados.</p>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <button 
+              onclick="openNewClubPlanModal()" 
+              class="px-3.5 py-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-gold-500/40 text-gold-300 text-xs font-semibold flex items-center gap-1.5 transition"
+            >
+              <i data-lucide="award" class="w-4 h-4 text-gold-400"></i>
+              <span>+ Novo Plano</span>
+            </button>
+            <button 
+              onclick="openNewClubMemberModal()" 
+              class="px-4 py-2 rounded-xl bg-gold-500 hover:bg-gold-400 text-obsidian-950 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-gold-glow transition"
+            >
+              <i data-lucide="user-plus" class="w-4 h-4"></i>
+              <span>+ Vincular Assinante</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 border-b border-obsidian-800 pb-2 text-xs">
+          <button onclick="switchClubTab('members')" id="tabBtnClubMembers" class="px-4 py-2 rounded-xl font-bold bg-gold-500 text-obsidian-950 transition">
+            Assinantes Ativos (<span id="clubMembersCountBadge">0</span>)
+          </button>
+          <button onclick="switchClubTab('plans')" id="tabBtnClubPlans" class="px-4 py-2 rounded-xl font-semibold text-neutral-400 hover:text-white hover:bg-obsidian-850 transition">
+            Planos & Benefícios (<span id="clubPlansCountBadge">0</span>)
+          </button>
+        </div>
+
+        <div id="clubTabMembersView" class="space-y-4">
+          <div id="clubMembersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+
+        <div id="clubTabPlansView" class="hidden space-y-4">
+          <div id="clubPlansList" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+        </div>
+      </section>
+
+      <section id="viewDashboard" class="hidden space-y-6">
+        <div class="bg-obsidian-900 border border-obsidian-800 p-5 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-xl">
+          <div>
+            <h2 class="font-serif font-bold text-xl text-white">Dashboard Financeiro & Comissões</h2>
+            <p class="text-xs text-neutral-400">Resumo de faturamento, retenção da barbearia e repasses aos barbeiros.</p>
+          </div>
+          <div class="flex items-center gap-1.5 bg-obsidian-800 p-1 rounded-xl text-xs">
+            <button onclick="setDashboardPeriodFilter('today')" class="px-3 py-1.5 rounded-lg bg-gold-500 text-obsidian-950 font-bold">Hoje</button>
+            <button onclick="setDashboardPeriodFilter('all')" class="px-3 py-1.5 rounded-lg text-neutral-300 hover:text-white">Geral</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="p-5 rounded-2xl bg-obsidian-900 border border-obsidian-800">
+            <span class="text-xs text-neutral-400 uppercase font-bold block mb-1">Faturamento Bruto</span>
+            <strong id="dashTotalGrossRevenue" class="text-gold-400 font-serif text-2xl">R$ 0,00</strong>
+          </div>
+          <div class="p-5 rounded-2xl bg-obsidian-900 border border-obsidian-800">
+            <span class="text-xs text-neutral-400 uppercase font-bold block mb-1">Comissões Equipe</span>
+            <strong id="dashTotalCommissions" class="text-emerald-400 font-serif text-2xl">R$ 0,00</strong>
+          </div>
+          <div class="p-5 rounded-2xl bg-obsidian-900 border border-obsidian-800">
+            <span class="text-xs text-neutral-400 uppercase font-bold block mb-1">Lucro Líquido Barbearia</span>
+            <strong id="dashNetShopRevenue" class="text-sky-300 font-serif text-2xl">R$ 0,00</strong>
+          </div>
+          <div class="p-5 rounded-2xl bg-obsidian-900 border border-obsidian-800">
+            <span class="text-xs text-neutral-400 uppercase font-bold block mb-1">Atendimentos Concluídos</span>
+            <strong id="dashTotalCutsCount" class="text-white text-2xl">0</strong>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 space-y-4">
+            <h3 class="font-serif font-bold text-base text-white">Comissões Individuais por Barbeiro</h3>
+            <div id="dashBarbersCommissionsList" class="space-y-3"></div>
+          </div>
+          <div class="space-y-4">
+            <h3 class="font-serif font-bold text-base text-white">Ranking de Atendimentos</h3>
+            <div id="dashBarberRankingContainer" class="space-y-2"></div>
+            <h3 class="font-serif font-bold text-base text-white pt-2">Métodos de Pagamento</h3>
+            <div id="dashPaymentMethodsContainer"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="viewClients" class="hidden space-y-6">
+        <div class="bg-obsidian-900 border border-obsidian-800 p-5 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-xl">
+          <div>
+            <h2 class="font-serif font-bold text-xl text-white">Base de Clientes CRM & Fidelidade</h2>
+            <p class="text-xs text-neutral-400">Edição completa de clientes cadastrados no clube e avulsos.</p>
+          </div>
+          <button 
+            onclick="openNewClientModal()" 
+            class="px-4 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-obsidian-950 font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-gold-glow transition"
+          >
+            <i data-lucide="user-plus" class="w-4 h-4"></i>
+            <span>+ Novo Cliente</span>
+          </button>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 text-xs bg-obsidian-900 p-3 rounded-2xl border border-obsidian-800">
+          <div class="flex items-center gap-2">
+            <button onclick="setClientsFilter('todos')" id="btnFilterCli_todos" class="px-3.5 py-1.5 rounded-xl font-bold bg-gold-500 text-obsidian-950 transition">Todos (<span id="cliCountAll">0</span>)</button>
+            <button onclick="setClientsFilter('clube')" id="btnFilterCli_clube" class="px-3.5 py-1.5 rounded-xl font-semibold bg-obsidian-850 hover:bg-obsidian-800 text-neutral-300 transition">⭐ Assinantes Clube (<span id="cliCountClub">0</span>)</button>
+            <button onclick="setClientsFilter('avulso')" id="btnFilterCli_avulso" class="px-3.5 py-1.5 rounded-xl font-semibold bg-obsidian-850 hover:bg-obsidian-800 text-neutral-300 transition">Avulsos (<span id="cliCountRegular">0</span>)</button>
+          </div>
+
+          <div class="relative w-full sm:w-64">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-2.5"></i>
+            <input 
+              type="text" 
+              id="crmSearchInput" 
+              oninput="onCrmSearchChange(this.value)" 
+              placeholder="Buscar por nome ou telefone..." 
+              class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl pl-9 pr-3 py-1.5 text-white outline-none text-xs"
+            />
+          </div>
+        </div>
+
+        <div id="clientsListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </section>
+
+      <section id="viewInventory" class="hidden space-y-6">
+        <div class="bg-obsidian-900 border border-obsidian-800 p-5 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-xl">
+          <div>
+            <h2 class="font-serif font-bold text-xl text-white">Estoque da Loja & Cosméticos</h2>
+            <p class="text-xs text-neutral-400">Controle total: editar produtos, custos, preços de venda e alterar estoque.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button 
+              onclick="openProductSaleModal()" 
+              class="px-3.5 py-2.5 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-gold-500/40 text-gold-300 text-xs font-semibold flex items-center gap-1.5 transition"
+            >
+              <i data-lucide="shopping-cart" class="w-4 h-4 text-gold-400"></i>
+              <span>Vender Balcão</span>
+            </button>
+            <button 
+              onclick="openNewProductModal()" 
+              class="px-4 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-obsidian-950 font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-gold-glow transition"
+            >
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>+ Novo Produto</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 text-xs bg-obsidian-900 p-3 rounded-2xl border border-obsidian-800">
+          <div class="flex items-center gap-2 overflow-x-auto" id="invCategoryFilterBar">
+            <button onclick="setInventoryCategory('todos')" id="btnFilterInv_todos" class="px-3.5 py-1.5 rounded-xl font-bold bg-gold-500 text-obsidian-950 transition">Todos</button>
+            <button onclick="setInventoryCategory('pomadas')" id="btnFilterInv_pomadas" class="px-3.5 py-1.5 rounded-xl font-semibold bg-obsidian-850 text-neutral-300 transition">Pomadas</button>
+            <button onclick="setInventoryCategory('barba')" id="btnFilterInv_barba" class="px-3.5 py-1.5 rounded-xl font-semibold bg-obsidian-850 text-neutral-300 transition">Barba</button>
+            <button onclick="setInventoryCategory('shampoos')" id="btnFilterInv_shampoos" class="px-3.5 py-1.5 rounded-xl font-semibold bg-obsidian-850 text-neutral-300 transition">Shampoos</button>
+            <button onclick="setInventoryCategory('tratamento')" id="btnFilterInv_tratamento" class="px-3.5 py-1.5 rounded-xl font-semibold bg-obsidian-850 text-neutral-300 transition">Tratamentos</button>
+          </div>
+
+          <div class="relative w-full sm:w-64">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-2.5"></i>
+            <input 
+              type="text" 
+              id="invSearchInput" 
+              oninput="onInventorySearchChange(this.value)" 
+              placeholder="Buscar produto..." 
+              class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl pl-9 pr-3 py-1.5 text-white outline-none text-xs"
+            />
+          </div>
+        </div>
+
+        <div id="inventoryListContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </section>
+
+      <section id="viewBarberInventory" class="hidden space-y-6">
+        <div class="bg-obsidian-900 border border-obsidian-800 p-5 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-xl">
+          <div>
+            <h2 class="font-serif font-bold text-xl text-white">Estoque Liberado para Venda no Balcão</h2>
+            <p class="text-xs text-neutral-400">Registre vendas de produtos para clientes com comissão de balcão.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-gold-500/10 border border-gold-500/30 flex items-center gap-3">
+            <i data-lucide="percent" class="w-5 h-5 text-gold-400"></i>
+            <div>
+              <span class="text-[10px] text-neutral-400 uppercase font-semibold block">Sua Comissão por Venda</span>
+              <strong id="barberProductCommBadge" class="text-gold-400 font-serif text-sm">10% de Comissão</strong>
+            </div>
+          </div>
+        </div>
+
+        <div id="barberInventoryCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      </section>
+
+      <section id="viewReports" class="hidden space-y-6">
+        <div id="reportsViewContainer"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <div id="modalNewBarber" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md">
+    <div class="bg-obsidian-900 border border-gold-500/40 rounded-2xl w-full max-w-2xl max-h-[92vh] flex flex-col shadow-2xl relative overflow-hidden animate-fade-in">
+      
+      <div class="p-4 sm:p-5 border-b border-obsidian-800 flex items-center justify-between bg-obsidian-950">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-gold-500/10 border border-gold-500/40 flex items-center justify-center text-gold-400">
+            <i data-lucide="scissors" class="w-4 h-4"></i>
+          </div>
+          <h3 id="barberModalTitle" class="font-serif font-bold text-white text-base">Cadastrar Novo Barbeiro</h3>
+        </div>
+        <button onclick="closeNewBarberModal()" class="p-2 rounded-xl text-neutral-400 hover:text-white hover:bg-obsidian-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs max-h-[72vh]">
+        <input type="hidden" id="barberEditId">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Nome Completo *</label>
+            <input type="text" id="barberFormName" required placeholder="Ex: Caio Silva" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2.5 text-white outline-none">
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Especialidade / Cargo</label>
+            <input type="text" id="barberFormRole" placeholder="Ex: Especialista Fade & Barboterapia" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2.5 text-white outline-none">
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Telefone / WhatsApp</label>
+            <input type="tel" id="barberFormPhone" placeholder="(19) 99876-0000" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2.5 text-white outline-none font-mono">
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Unidade de Lotação</label>
+            <select id="barberFormUnit" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2.5 text-white outline-none">
+              <option value="Unidade Paulista (Matriz)">Unidade Paulista (Matriz)</option>
+              <option value="Unidade Carmine Feola">Unidade Carmine Feola</option>
+              <option value="Unidade Terramérica">Unidade Terramérica</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-obsidian-850 border border-obsidian-750 space-y-3">
+          <span class="text-[10px] uppercase font-bold text-gold-400 tracking-wider block">Credenciais de Acesso ao Painel</span>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-neutral-300 font-semibold mb-1">Usuário de Login *</label>
+              <input type="text" id="barberFormUsername" required placeholder="Ex: caio" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2 text-white outline-none font-mono">
+            </div>
+            <div>
+              <label class="block text-neutral-300 font-semibold mb-1">Senha de Acesso *</label>
+              <input type="password" id="barberFormPassword" required placeholder="••••••••" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2 text-white outline-none font-mono">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Meta Diária (Cortes)</label>
+            <input type="number" id="barberFormDailyGoal" value="8" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white text-center outline-none">
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Meta Mensal (Cortes)</label>
+            <input type="number" id="barberFormMonthlyGoal" value="160" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white text-center outline-none">
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Comissão Prod (%)</label>
+            <input type="number" id="barberFormProdComm" value="10" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white text-center outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">URL Foto / Avatar</label>
+          <input type="url" id="barberFormAvatar" placeholder="https://..." class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2 text-white outline-none text-xs">
+        </div>
+
+        <div class="space-y-2 pt-2">
+          <label class="block text-neutral-200 font-semibold">Comissões por Serviço Cadastrado</label>
+          <div id="barberCommissionsFormContainer" class="space-y-2"></div>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-obsidian-800 bg-obsidian-950 flex justify-end gap-3">
+        <button type="button" onclick="closeNewBarberModal()" class="px-4 py-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 text-neutral-300 text-xs font-semibold">
+          Cancelar
+        </button>
+        <button type="button" onclick="saveBarberForm()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-gold-400 text-obsidian-950 font-bold text-xs uppercase tracking-wider shadow-gold-glow">
+          Salvar Barbeiro
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="modalClientForm" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md">
+    <div class="bg-obsidian-900 border border-gold-500/40 rounded-2xl w-full max-w-lg max-h-[92vh] flex flex-col shadow-2xl relative animate-fade-in overflow-hidden">
+      <div class="p-4 sm:p-5 border-b border-obsidian-800 flex items-center justify-between bg-obsidian-950">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-gold-500/10 border border-gold-500/40 flex items-center justify-center text-gold-400">
+            <i data-lucide="user" class="w-4 h-4"></i>
+          </div>
+          <h3 id="clientFormModalTitle" class="font-serif font-bold text-white text-base">Cadastrar Cliente</h3>
+        </div>
+        <button onclick="closeClientFormModal()" class="p-2 rounded-xl text-neutral-400 hover:text-white hover:bg-obsidian-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs max-h-[72vh]">
+        <input type="hidden" id="clientFormId">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Nome Completo *</label>
+            <input type="text" id="clientFormName" required placeholder="Ex: Rodrigo Alcantara" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2.5 text-white outline-none">
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">WhatsApp / Telefone *</label>
+            <input type="tel" id="clientFormPhone" required placeholder="(19) 99123-4567" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2.5 text-white outline-none font-mono">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">E-mail</label>
+            <input type="email" id="clientFormEmail" placeholder="cliente@email.com" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2.5 text-white outline-none">
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Barbeiro Preferido</label>
+            <select id="clientFormFavBarber" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2.5 text-white outline-none"></select>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-obsidian-850 border border-obsidian-750 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-gold-400 uppercase tracking-wider">Assinatura do Clube</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="clientFormIsClub" onchange="toggleClientClubFields()" class="sr-only peer">
+              <div class="w-9 h-5 bg-obsidian-750 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gold-500"></div>
+            </label>
+          </div>
+
+          <div id="clientClubFieldsContainer" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-obsidian-800">
+            <div>
+              <label class="block text-neutral-300 font-semibold mb-1">Plano Assinado</label>
+              <select id="clientFormClubPlan" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none"></select>
+            </div>
+            <div>
+              <label class="block text-neutral-300 font-semibold mb-1">Validade da Assinatura</label>
+              <input type="date" id="clientFormClubExpiry" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none [color-scheme:dark]">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Histórico de Visitas</label>
+            <input type="number" id="clientFormVisits" value="0" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Total Gasto (R$)</label>
+            <input type="number" step="0.5" id="clientFormSpent" value="0" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none font-mono text-center">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">Observações & Preferências</label>
+          <textarea id="clientFormNotes" rows="2" placeholder="Ex: Prefere corte com navalha, toalha aromatizada, etc." class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl p-3 text-white outline-none resize-none"></textarea>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-obsidian-800 bg-obsidian-950 flex justify-end gap-3">
+        <button type="button" onclick="closeClientFormModal()" class="px-4 py-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 text-neutral-300 text-xs font-semibold">Cancelar</button>
+        <button type="button" onclick="saveClientForm()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-gold-400 text-obsidian-950 font-bold text-xs uppercase tracking-wider shadow-gold-glow">Salvar Cliente</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalServiceForm" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md">
+    <div class="bg-obsidian-900 border border-gold-500/40 rounded-2xl w-full max-w-md max-h-[92vh] flex flex-col shadow-2xl relative animate-fade-in overflow-hidden">
+      <div class="p-4 sm:p-5 border-b border-obsidian-800 flex items-center justify-between bg-obsidian-950">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-gold-500/10 border border-gold-500/40 flex items-center justify-center text-gold-400">
+            <i data-lucide="scissors" class="w-4 h-4"></i>
+          </div>
+          <h3 id="serviceModalTitle" class="font-serif font-bold text-white text-base">Novo Serviço</h3>
+        </div>
+        <button onclick="closeServiceModal()" class="p-2 rounded-xl text-neutral-400 hover:text-white hover:bg-obsidian-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs max-h-[72vh]">
+        <input type="hidden" id="serviceFormId">
+
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">Nome do Procedimento *</label>
+          <input type="text" id="serviceFormName" required placeholder="Ex: Barboterapia Especial" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2.5 text-white outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Categoria *</label>
+            <select id="serviceFormCategory" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none">
+              <option value="cabelo">Cabelo</option>
+              <option value="barba">Barba</option>
+              <option value="combo">Combo</option>
+              <option value="tratamento">Tratamento</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Preço de Balcão (R$) *</label>
+            <input type="number" step="0.5" id="serviceFormPrice" required placeholder="55.00" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none font-mono text-center">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Duração (min)</label>
+            <input type="number" id="serviceFormDuration" value="35" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Tipo Comissão</label>
+            <select id="serviceFormCommType" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-2 py-2 text-white outline-none">
+              <option value="percent">% Porcentagem</option>
+              <option value="fixed">R$ Fixo</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Valor Comissão</label>
+            <input type="number" step="0.5" id="serviceFormCommValue" value="50" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none font-mono text-center">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">Descrição</label>
+          <textarea id="serviceFormDescription" rows="2" placeholder="Resumo dos cuidados inclusos..." class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl p-3 text-white outline-none resize-none"></textarea>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-obsidian-800 bg-obsidian-950 flex justify-end gap-3">
+        <button type="button" onclick="closeServiceModal()" class="px-4 py-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 text-neutral-300 text-xs font-semibold">Cancelar</button>
+        <button type="button" onclick="saveServiceForm()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-gold-400 text-obsidian-950 font-bold text-xs uppercase tracking-wider shadow-gold-glow">Salvar Serviço</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalClubPlanForm" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md">
+    <div class="bg-obsidian-900 border border-gold-500/40 rounded-2xl w-full max-w-md max-h-[92vh] flex flex-col shadow-2xl relative animate-fade-in overflow-hidden">
+      <div class="p-4 sm:p-5 border-b border-obsidian-800 flex items-center justify-between bg-obsidian-950">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-gold-500/10 border border-gold-500/40 flex items-center justify-center text-gold-400">
+            <i data-lucide="award" class="w-4 h-4"></i>
+          </div>
+          <h3 id="clubPlanModalTitle" class="font-serif font-bold text-white text-base">Plano de Assinatura</h3>
+        </div>
+        <button onclick="closeClubPlanModal()" class="p-2 rounded-xl text-neutral-400 hover:text-white hover:bg-obsidian-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs max-h-[72vh]">
+        <input type="hidden" id="clubPlanFormId">
+
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">Nome do Plano *</label>
+          <input type="text" id="clubPlanFormName" required placeholder="Ex: Gold Club Ilimitado" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2.5 text-white outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Preço Mensal (R$) *</label>
+            <input type="number" step="0.5" id="clubPlanFormPrice" required placeholder="99.90" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Desconto Cosméticos (%)</label>
+            <input type="number" id="clubPlanFormDiscount" value="10" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none font-mono text-center">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">Selo / Destaque Visual</label>
+          <input type="text" id="clubPlanFormBadge" placeholder="Ex: Mais Vendido em Americana" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2 text-white outline-none">
+        </div>
+
+        <div>
+          <label class="block text-neutral-200 font-semibold mb-1.5">Serviços Inclusos no Plano:</label>
+          <div id="clubPlanServicesCheckboxes" class="space-y-1.5 max-h-40 overflow-y-auto p-2 bg-obsidian-850 rounded-xl border border-obsidian-800"></div>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-obsidian-800 bg-obsidian-950 flex justify-end gap-3">
+        <button type="button" onclick="closeClubPlanModal()" class="px-4 py-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 text-neutral-300 text-xs font-semibold">Cancelar</button>
+        <button type="button" onclick="saveClubPlanForm()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-gold-400 text-obsidian-950 font-bold text-xs uppercase tracking-wider shadow-gold-glow">Salvar Plano</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalClubMemberForm" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md">
+    <div class="bg-obsidian-900 border border-gold-500/40 rounded-2xl w-full max-w-md max-h-[92vh] flex flex-col shadow-2xl relative animate-fade-in overflow-hidden">
+      <div class="p-4 sm:p-5 border-b border-obsidian-800 flex items-center justify-between bg-obsidian-950">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-gold-500/10 border border-gold-500/40 flex items-center justify-center text-gold-400">
+            <i data-lucide="user-check" class="w-4 h-4"></i>
+          </div>
+          <h3 id="clubMemberModalTitle" class="font-serif font-bold text-white text-base">Assinante do Clube</h3>
+        </div>
+        <button onclick="closeClubMemberModal()" class="p-2 rounded-xl text-neutral-400 hover:text-white hover:bg-obsidian-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs max-h-[72vh]">
+        <input type="hidden" id="clubMemberFormId">
+
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">Nome do Cliente *</label>
+          <input type="text" id="clubMemberFormName" required placeholder="Ex: Rodrigo Alcantara" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2.5 text-white outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">WhatsApp / Telefone *</label>
+            <input type="tel" id="clubMemberFormPhone" required placeholder="(19) 99123-4567" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none font-mono">
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">E-mail</label>
+            <input type="email" id="clubMemberFormEmail" placeholder="cliente@email.com" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">Plano Escolhido *</label>
+          <select id="clubMemberFormPlanSelect" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2.5 text-white outline-none"></select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Data Início</label>
+            <input type="date" id="clubMemberFormStartDate" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none [color-scheme:dark]">
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Data Validade</label>
+            <input type="date" id="clubMemberFormExpiryDate" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none [color-scheme:dark]">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">Status da Assinatura</label>
+          <select id="clubMemberFormStatus" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2 text-white outline-none">
+            <option value="ativo">Ativo</option>
+            <option value="pausado">Pausado</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-obsidian-800 bg-obsidian-950 flex justify-end gap-3">
+        <button type="button" onclick="closeClubMemberModal()" class="px-4 py-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 text-neutral-300 text-xs font-semibold">Cancelar</button>
+        <button type="button" onclick="saveClubMemberForm()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-gold-400 text-obsidian-950 font-bold text-xs uppercase tracking-wider shadow-gold-glow">Salvar Assinante</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalProductForm" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md">
+    <div class="bg-obsidian-900 border border-gold-500/40 rounded-2xl w-full max-w-md max-h-[92vh] flex flex-col shadow-2xl relative animate-fade-in overflow-hidden">
+      <div class="p-4 sm:p-5 border-b border-obsidian-800 flex items-center justify-between bg-obsidian-950">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-gold-500/10 border border-gold-500/40 flex items-center justify-center text-gold-400">
+            <i data-lucide="package" class="w-4 h-4"></i>
+          </div>
+          <h3 id="productModalTitle" class="font-serif font-bold text-white text-base">Produto no Estoque</h3>
+        </div>
+        <button onclick="closeProductModal()" class="p-2 rounded-xl text-neutral-400 hover:text-white hover:bg-obsidian-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs max-h-[72vh]">
+        <input type="hidden" id="productFormId">
+
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">Nome do Produto *</label>
+          <input type="text" id="productFormName" required placeholder="Ex: Pomada Matte Efeito Seco 100g" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2.5 text-white outline-none">
+        </div>
+
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">Categoria *</label>
+          <select id="productFormCategory" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3.5 py-2 text-white outline-none">
+            <option value="pomadas">Pomadas & Finalizadores</option>
+            <option value="barba">Óleos & Barboterapia</option>
+            <option value="shampoos">Shampoos & Cabelo</option>
+            <option value="tratamento">Tônicos & Tratamento</option>
+            <option value="bebidas">Bebidas & Snacks</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Preço de Custo (R$) *</label>
+            <input type="number" step="0.5" id="productFormCostPrice" required placeholder="18.00" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Preço de Venda (R$) *</label>
+            <input type="number" step="0.5" id="productFormSalePrice" required placeholder="45.00" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-gold-300 font-bold font-mono outline-none text-center">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Estoque Atual *</label>
+            <input type="number" id="productFormCurrentStock" required placeholder="15" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none font-mono text-center">
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Estoque Mínimo (Alerta) *</label>
+            <input type="number" id="productFormMinStock" required placeholder="5" class="w-full bg-obsidian-800 border border-obsidian-700 focus:border-gold-500 rounded-xl px-3 py-2 text-white outline-none font-mono text-center">
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-obsidian-800 bg-obsidian-950 flex justify-end gap-3">
+        <button type="button" onclick="closeProductModal()" class="px-4 py-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 text-neutral-300 text-xs font-semibold">Cancelar</button>
+        <button type="button" onclick="saveProductForm()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold-500 to-gold-400 text-obsidian-950 font-bold text-xs uppercase tracking-wider shadow-gold-glow">Salvar Produto</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalProductSale" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md">
+    <div class="bg-obsidian-900 border border-gold-500/40 rounded-2xl w-full max-w-md p-5 sm:p-6 space-y-4 shadow-2xl relative animate-fade-in">
+      <div class="flex items-center justify-between border-b border-obsidian-800 pb-3">
+        <h3 class="font-serif font-bold text-white text-base">Registrar Venda Balcão</h3>
+        <button onclick="closeProductSaleModal()" class="text-neutral-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">Produto *</label>
+          <select id="saleProductSelect" onchange="onSaleProductSelectChange()" class="w-full bg-obsidian-800 border border-obsidian-700 rounded-xl px-3 py-2 text-white outline-none"></select>
+        </div>
+
+        <div class="p-3 rounded-xl bg-obsidian-850 border border-obsidian-750 flex items-center justify-between">
+          <div>
+            <span class="text-[10px] text-neutral-400 uppercase block">Preço Unitário</span>
+            <strong id="saleProductUnitPriceDisplay" class="text-gold-400 font-serif text-base">R$ 0,00</strong>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] text-neutral-400 uppercase block">Estoque Disponível</span>
+            <span id="saleProductStockBadge" class="text-xs font-mono font-bold text-emerald-400">0 un</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">Quantidade *</label>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="adjustSaleQuantity(-1)" class="w-9 h-9 rounded-xl bg-obsidian-800 text-white font-bold text-base flex items-center justify-center">-</button>
+            <input type="number" id="saleQuantityInput" value="1" min="1" oninput="calculateSaleTotals()" class="flex-1 bg-obsidian-800 border border-obsidian-700 rounded-xl py-2 px-3 text-center text-white font-mono font-bold outline-none">
+            <button type="button" onclick="adjustSaleQuantity(1)" class="w-9 h-9 rounded-xl bg-obsidian-800 text-white font-bold text-base flex items-center justify-center">+</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Barbeiro Vendedor</label>
+            <select id="saleBarberSelect" onchange="calculateSaleTotals()" class="w-full bg-obsidian-800 border border-obsidian-700 rounded-xl px-3 py-2 text-white outline-none"></select>
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Forma de Pagamento</label>
+            <select id="salePaymentMethodSelect" class="w-full bg-obsidian-800 border border-obsidian-700 rounded-xl px-3 py-2 text-white outline-none">
+              <option value="pix">PIX</option>
+              <option value="cartao">Cartão</option>
+              <option value="dinheiro">Dinheiro</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-obsidian-950 border border-gold-500/30 flex items-center justify-between text-xs">
+          <span>Total da Venda: <strong id="saleTotalValueDisplay" class="text-gold-400 font-serif text-base">R$ 0,00</strong></span>
+          <span class="text-neutral-400">Comissão: <strong id="saleCommissionValueDisplay" class="text-emerald-400 font-serif">R$ 0,00</strong></span>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-obsidian-800 flex justify-end gap-2 text-xs">
+        <button onclick="closeProductSaleModal()" class="px-4 py-2 rounded-xl bg-obsidian-850 text-neutral-300">Cancelar</button>
+        <button onclick="confirmProductSale()" class="px-5 py-2 rounded-xl bg-gold-500 font-bold text-obsidian-950 uppercase shadow-gold-glow">Concluir Venda</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalQuickBooking" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md">
+    <div class="bg-obsidian-900 border border-gold-500/40 rounded-2xl w-full max-w-md p-5 sm:p-6 space-y-4 shadow-2xl relative animate-fade-in">
+      <div class="flex items-center justify-between border-b border-obsidian-800 pb-3">
+        <h3 class="font-serif font-bold text-white text-base">Encaixe Rápido de Cliente</h3>
+        <button onclick="closeQuickBookingModal()" class="text-neutral-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">Nome do Cliente *</label>
+          <input type="text" id="quickClientName" placeholder="Nome do cliente" class="w-full bg-obsidian-800 border border-obsidian-700 rounded-xl px-3.5 py-2.5 text-white outline-none">
+        </div>
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">WhatsApp (Opcional)</label>
+          <input type="tel" id="quickClientPhone" placeholder="(19) 90000-0000" class="w-full bg-obsidian-800 border border-obsidian-700 rounded-xl px-3.5 py-2.5 text-white outline-none font-mono">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Barbeiro</label>
+            <select id="quickBarberSelect" class="w-full bg-obsidian-800 border border-obsidian-700 rounded-xl px-3 py-2 text-white outline-none"></select>
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Horário</label>
+            <input type="text" id="quickTimeInput" class="w-full bg-obsidian-800 border border-obsidian-700 rounded-xl px-3 py-2 text-white outline-none font-mono text-center">
+          </div>
+        </div>
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1">Serviço</label>
+          <select id="quickServiceSelect" class="w-full bg-obsidian-800 border border-obsidian-700 rounded-xl px-3 py-2 text-white outline-none"></select>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-obsidian-800 flex justify-end gap-2 text-xs">
+        <button onclick="closeQuickBookingModal()" class="px-4 py-2 rounded-xl bg-obsidian-850 text-neutral-300">Cancelar</button>
+        <button onclick="saveQuickBooking()" class="px-5 py-2 rounded-xl bg-gold-500 font-bold text-obsidian-950 uppercase shadow-gold-glow">Confirmar Encaixe</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalRescheduleAppointment" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md">
+    <div class="bg-obsidian-900 border border-gold-500/40 rounded-2xl w-full max-w-lg p-5 sm:p-6 space-y-4 shadow-2xl relative animate-fade-in">
+      <div class="flex items-center justify-between border-b border-obsidian-800 pb-3">
+        <h3 class="font-serif font-bold text-white text-base">Reagendar Atendimento</h3>
+        <button onclick="closeRescheduleModal()" class="text-neutral-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div id="rescheduleAppDetails"></div>
+
+      <div class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Nova Data</label>
+            <input type="date" id="rescheduleDateInput" onchange="renderRescheduleSlots()" class="w-full bg-obsidian-800 border border-obsidian-700 rounded-xl px-3 py-2 text-white outline-none [color-scheme:dark]">
+          </div>
+          <div>
+            <label class="block text-neutral-300 font-semibold mb-1">Barbeiro</label>
+            <select id="rescheduleBarberSelect" onchange="renderRescheduleSlots()" class="w-full bg-obsidian-800 border border-obsidian-700 rounded-xl px-3 py-2 text-white outline-none"></select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-neutral-300 font-semibold mb-1.5">Escolha o Novo Horário Vago:</label>
+          <div id="rescheduleSlotsContainer" class="grid grid-cols-4 gap-2"></div>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-obsidian-800 flex justify-end gap-2 text-xs">
+        <button onclick="closeRescheduleModal()" class="px-4 py-2 rounded-xl bg-obsidian-850 text-neutral-300">Cancelar</button>
+        <button onclick="confirmRescheduleAppointment()" class="px-5 py-2 rounded-xl bg-gold-500 font-bold text-obsidian-950 uppercase shadow-gold-glow">Confirmar Novo Horário</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastNotification" class="hidden fixed bottom-6 right-6 z-50 transition-all duration-300 transform translate-y-5 opacity-0">
+    <div id="toastInner" class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border text-xs font-semibold backdrop-blur-md bg-emerald-950/90 border-emerald-500/60 text-emerald-200">
+      <i id="toastIcon" data-lucide="check-circle" class="w-4 h-4 shrink-0"></i>
+      <span id="toastMessage">Operação realizada com sucesso!</span>
+    </div>
+  </div>
+
+  <footer class="py-4 border-t border-obsidian-900 px-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-neutral-500 max-w-7xl mx-auto w-full">
+    <div>Seu Dito Barber Club &bull; Painel de Gestão Operacional &bull; Americana - SP</div>
+    <a href="index.html" class="text-neutral-400 hover:text-gold-400 transition flex items-center gap-1">
+      <i data-lucide="home" class="w-3.5 h-3.5"></i>
+      <span>Ir para o Site</span>
+    </a>
+  </footer>
+
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initAdminPanel();
+    });
+  </script>
+</body>
+</html>
